@@ -27,18 +27,31 @@ const Signup = () => {
   console.log(formData, "formData");
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Generate access token
-    const accessToken = generateAccessToken();
-    // Store user data and access token in local storage
-    localStorage.setItem("user", JSON.stringify({ ...formData, accessToken }));
-    // Set success message
-    setSuccessMessage("Signup successful. Redirecting to profile...");
-    // Redirect to profile page
-    setToggleError(false);
+    if(formData.fname === "" || formData.email === "" || formData.pass === "" || formData.cpass === "")
+    {
+        setErrorMessage("Error: All the fields are mandatory");
+        setToggleError(true);
+    } else if(formData.pass !== formData.cpass)
+    {
+        setErrorMessage("Error: Passwords do not match");
+        setToggleError(true);
+    }else {
+        // Generate access token
+        const accessToken = generateAccessToken();
+        // Store user data and access token in local storage
+        localStorage.setItem("user", JSON.stringify({ ...formData, accessToken }));
+        setErrorMessage("")
+        // Set success message
+        setSuccessMessage("Signup successful. Redirecting to profile...");
+        // Redirect to profile page
+        setToggleError(false);
 
-    setTimeout(() => {
-      navigate("/profile");
-    }, 2000);
+        setTimeout(() => {
+        navigate("/profile");
+        }, 2000);
+    }
+
+    
   };
 
   const generateAccessToken = () => {
@@ -85,7 +98,7 @@ const Signup = () => {
             formData.email === "" ||
             formData.pass === "" ||
             formData.cpass === "") ? (
-            <div className="error">Error : All the field are mandatory </div>
+            <div className="error">{errorMessage}</div>
           ) : (
             ""
           )}
